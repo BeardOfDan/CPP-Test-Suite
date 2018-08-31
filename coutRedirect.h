@@ -48,37 +48,3 @@ struct redirectOutput {
   streambuf* originalCoutBuffer;
   stringstream capturedOutput;
 };
-
-/* Example of use
-
-#include "coutRedirect.h"
-// redirectOutput struct
-
-#include <iostream>
-using std::cout;
-using std::endl;
-
-#include <string>
-using std::string;
-
-int main() {
-  string capturedContent;
-
-  {
-    redirectOutput redirection;
-
-    // multiline output
-    cout << "Testing...\n" << endl << "Further analysis..." << endl;
-
-    capturedContent = redirection.getContents();
-  }  // end of local scope, this causes the redirectOutput destructor to execute
-
-  cout << "Outside" << endl;  // confirms that cout acts normally
-
-  cout << "capturedContent: '" << capturedContent << "'" << endl;
-
-  return 0;
-}
-
-
-*/

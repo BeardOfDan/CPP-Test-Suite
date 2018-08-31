@@ -1,4 +1,5 @@
 // Note: The below struct was inspired by the answer by "Björn Pollex"
+//   In particular, the constructor and destructor
 //   https://stackoverflow.com/questions/5419356/redirect-stdout-stderr-to-a-string
 
 // Note: The below function "getVectorOfLines" uses a method, to break up
@@ -32,12 +33,11 @@ struct redirectOutput {
   string getContents() { return capturedOutput.str(); }
 
   vector<string> getVectorOfLines(char delimiter = '\n') {
-    const string str = capturedOutput.str();
+    stringstream content(capturedOutput.str());
     vector<string> result;
 
-    stringstream ss(str);
     string line;
-    while (getline(ss, line, delimiter)) {
+    while (getline(content, line, delimiter)) {
       *(back_inserter(result)++) = line;
     }
 

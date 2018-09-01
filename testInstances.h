@@ -9,8 +9,8 @@ using std::string;
 class testInstances {
  public:
   // The extended class will add a particular tuple for the arguments
-  testInstances(void (*func)(int), string eo)
-      : functionToTest{func}, expectedOutput{eo} {}
+  testInstances(string eo)
+      : expectedOutput{eo} {}
 
   ~testInstances() {}
 
@@ -22,9 +22,6 @@ class testInstances {
   //   // if needed, add vector of output lines (to expanded class)
   //   //   would possibly need to override passed method if using this
   // } // end of scope executes coutRedirect's destructor
-  void execTest() {
-    functionToTest(1);
-  }  // using a basic version for initial testing
 
   // lookup inline functions, this should probably be one...
   bool passed() { return expectedOutput == actualOutput; }
@@ -34,7 +31,7 @@ class testInstances {
   //   would need to implement the delimiter function on expectedOutput
   //   probably means would want to refactor it to a seperate .h file
 
-  void (*functionToTest)(int);
+  // void (*functionToTest)();
   string expectedOutput;
   string actualOutput;
 

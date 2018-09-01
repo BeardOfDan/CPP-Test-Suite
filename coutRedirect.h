@@ -22,6 +22,7 @@ using std::string;
 using std::vector;
 
 struct redirectOutput {
+ public:
   redirectOutput() : originalCoutBuffer(cout.rdbuf()) {
     cout.rdbuf(capturedOutput.rdbuf());  // capture cout's output
   }

@@ -7,6 +7,7 @@ using std::string;
 
 // A base class to be extended for each type of test
 class testInstances {
+ public:
   // The extended class will add a particular tuple for the arguments
   testInstances(void (*func)(), string eo)
       : functionToTest{func}, expectedOutput{eo} {}
@@ -21,6 +22,9 @@ class testInstances {
   //   // if needed, add vector of output lines (to expanded class)
   //   //   would possibly need to override passed method if using this
   // } // end of scope executes coutRedirect's destructor
+  void execTest() {
+    functionToTest();
+  }  // using a basic version for initial testing 
 
   // lookup inline functions, this should probably be one...
   bool passed() { return expectedOutput == actualOutput; }

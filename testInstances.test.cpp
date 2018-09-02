@@ -5,12 +5,12 @@ using std::endl;
 #include <string>
 using std::string;
 
-#include "testInstances.h"
+#include "testInstance.h"
 
 int main() {
   string s = "asdf";
 
-  testInstances u{s};
+  testInstance u{s};
   cout << u.expectedOutput << endl;
 
   return 0;

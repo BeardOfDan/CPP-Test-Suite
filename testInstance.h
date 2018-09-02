@@ -16,15 +16,6 @@ using std::apply;
 using std::get;
 using std::tuple;
 
-// TODO: Either pass an optional variable to constructor to handle flow control,
-// and implement here, or extend this class to create a testInstance that allows
-// for a particular test function to be used (since not all functions to test
-// will automatically pipe their result to cout)
-// ---- Possible implementation: create a generic function that simply executes
-// functionToTest(arguments) in the same way it currently is. This function will
-// be the default value for an additional constructor argument that allows a
-// tester to define particular implementations of their tests.
-
 template <typename Func, typename tup>
 string defaultFunc(Func f, tup t) {
   redirectOutput output;
@@ -33,9 +24,6 @@ string defaultFunc(Func f, tup t) {
 
   return output.getContents();
 }
-
-// possible constructor arg format
-// , Func defFunc = defaultFunc
 
 class testInstance {
  public:

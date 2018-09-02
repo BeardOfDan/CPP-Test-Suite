@@ -1,4 +1,4 @@
-// Lab 1, Write Array Nth Backwards
+// Lab 1, Write Array Nth Backward
 // Programmer: Daniel Roberts
 // Editor(s) used: VS Code
 // Compiler(s) used: g++ -std=c++17 -Wall
@@ -30,7 +30,7 @@ int main() {
   // TODO: Define the number of tests at the beginning of the program
   //         to remove any 'magic numbers'
 
-  int passed{};
+  int passed{};  // number of tests passed
 
   // TODO: Refactor args to be filled from a file or something more efficient
   const char* inputs[4]{"abc123", "hello", "hello", "c1c1c1"};

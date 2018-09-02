@@ -1,3 +1,7 @@
+// C++ Test Suite
+// Programmer: Daniel Roberts
+// Compiler(s) used: g++ -std=c++17 -Wall
+
 // Note: The below struct was inspired by the answer by "Björn Pollex"
 //   In particular, the constructor and destructor
 //   https://stackoverflow.com/questions/5419356/redirect-stdout-stderr-to-a-string

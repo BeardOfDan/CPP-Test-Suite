@@ -1,3 +1,8 @@
+// Lab 1, Write Array Nth Backwards
+// Programmer: Daniel Roberts
+// Editor(s) used: VS Code
+// Compiler(s) used: g++ -std=c++17 -Wall
+
 #include <iostream>
 using std::cout;
 using std::endl;

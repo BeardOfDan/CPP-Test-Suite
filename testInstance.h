@@ -1,3 +1,6 @@
+// C++ Test Suite
+// Programmer: Daniel Roberts
+// Compiler(s) used: g++ -std=c++17 -Wall
 
 #include <string>
 using std::string;

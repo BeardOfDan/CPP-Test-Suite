@@ -19,6 +19,9 @@ int main() {
 
   int passed{};
 
+  // TODO: Define the number of tests at the beginning of the program
+  //         to remove any 'magic numbers'
+
   // TODO: Refactor args to be filled from a file or something more efficient
   const char* inputs[4]{"abc123", "hello", "hello", "c1c1c1"};
 
@@ -40,6 +43,10 @@ int main() {
     passed += test.passed() ? 1 : 0;
   }
 
+  // TODO: Expand on the printout of the results
+  //         (ex. percentage passed, specific info on failed tests, etc.)
+  // TODO: Utilize color change and formatting to improve
+  //       the visibility of the test results ... and make it look cooler
   cout << passed << " of " << args.size() << " tests passed!" << endl;
 
   return 0;

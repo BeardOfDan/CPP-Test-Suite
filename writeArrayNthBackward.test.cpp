@@ -39,13 +39,14 @@ int main() {  // TODO: create test runner class to automate a bunch of this
 
   for (size_t i{}; i < args.size(); i++) {
     testWriteArrayNthBackward test{expectedOutputs[i], args[i]};
-    test.execTest();
 
-    pass += test.passed() ? 1 : 0;
+    pass += test.execTest() ? 1 : 0;
 
     actualOutputs.push_back(test.actualOutput);
   }
 
+  // TODO: Remove manual comparison (and actualOutputs vector),
+  //        as they are now unnecessary (the bug was fixed)
   for (size_t i{}; i < args.size(); i++) {
     cout << "ExpectedOutputs[" << i << "]: | " << expectedOutputs[i] << endl;
     cout << "---------------------" << endl;

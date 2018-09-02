@@ -2,17 +2,30 @@
 #include <string>
 using std::string;
 
-// TODO: See if there is a way to add a generic tuple (for args)
-//       Then the execTest method could be placed here
-//         ... assuming that a generic function pointer could be placed here,
-//         then initialized in the extended class's constructor
+#include "coutRedirect.h"
+// contains redirectOutput
 
-// A base class to be extended for each type of test
+#include <tuple>
+using std::apply;
+using std::get;
+using std::tuple;
+
 class testInstance {
  public:
-  testInstance(string eo = "") : expectedOutput{eo} {}
+  template <typename Func, typename tup>
+  testInstance(Func f, tup t, string eo) : expectedOutput{eo} {
+    Func functionToTest{f};
+    tup arguments{t};
+
+    // execute test
+    redirectOutput output;
+    apply(functionToTest, arguments);
+    actualOutput = output.getContents();
+  }
 
   ~testInstance() {}
+
+  bool passed() { return expectedOutput.compare(actualOutput); }
 
   string expectedOutput;
   string actualOutput;

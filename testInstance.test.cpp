@@ -12,6 +12,10 @@ using std::string;
 
 #include <tuple>
 using std::make_tuple;
+using std::tuple;
+
+#include <vector>
+using std::vector;
 
 #include "testInstance.h"
 
@@ -19,6 +23,8 @@ using std::make_tuple;
 // function (of same name) to test
 
 int main() {
+  // TODO: accept an argument to main that would stop the 'Basic program info'
+  // from printing to the screen
   cout << endl;  // Basic program info
   cout << "Lab 1, Write Array Nth Backwards" << endl;
   cout << "Programmer: Daniel Roberts" << endl;
@@ -36,7 +42,7 @@ int main() {
   const char* expectedOutputs[TEST_COUNT]{"2ca", "olleh", "l", "ccc"};
   const int nVals[TEST_COUNT]{2, 1, 3, 2};
 
-  vector<tuple<const char*, int, int, int>> args;
+  vector<tuple<const char*, int, int, int> > args;
 
   for (size_t i {} i < TEST_COUNT; i++) {  // populate args vector
     args.push_back(make_tuple(inputs[i], 0, strlen(inputs[i]), nVals[i]));
@@ -52,6 +58,9 @@ int main() {
   //         (ex. percentage passed, specific info on failed tests, etc.)
   // TODO: Utilize color change and formatting to improve
   //       the visibility of the test results ... and make it look cooler
+  //   Note: All implementations are platform dependent, so will have to
+  //         make a version for Bash and another for DOS then make some sort
+  //         of system call to determine which one to use at runtime
   cout << passed << " of " << TEST_COUNT << " tests passed!" << endl << endl;
 
   return 0;

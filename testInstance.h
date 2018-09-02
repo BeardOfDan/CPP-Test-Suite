@@ -2,6 +2,10 @@
 // Programmer: Daniel Roberts
 // Compiler(s) used: g++ -std=c++17 -Wall
 
+// TODO: Implement the thing (macro?) that decides not to define previously
+// defined things, as this is intended to be an included file.
+// Do the same for redirectOutput.h
+
 #include <string>
 using std::string;
 

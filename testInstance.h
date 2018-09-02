@@ -48,7 +48,7 @@ class testInstance {
 
   ~testInstance() {}
 
-  bool passed() { return expectedOutput.compare(actualOutput); }
+  bool passed() { return expectedOutput == actualOutput; }
 
   string expectedOutput;
   string actualOutput;

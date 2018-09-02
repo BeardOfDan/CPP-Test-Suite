@@ -1,18 +1,14 @@
 
-#include <tuple>
-using std::tuple;
-
 #include <string>
 using std::string;
 
 // A base class to be extended for each type of test
-class testInstances {
+class testInstance {
  public:
   // The extended class will add a particular tuple for the arguments
-  testInstances(string eo)
-      : expectedOutput{eo} {}
+  testInstance(string eo = "") : expectedOutput{eo} {}
 
-  ~testInstances() {}
+  ~testInstance() {}
 
   // This method will be defined in the extended class
   // void execTest() {

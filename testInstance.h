@@ -3,7 +3,6 @@
 using std::string;
 
 #include "redirectOutput.h"
-// contains redirectOutput
 
 #include <tuple>
 using std::apply;

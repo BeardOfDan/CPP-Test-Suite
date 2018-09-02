@@ -14,6 +14,14 @@ using std::make_tuple;
 // function (of same name) to test
 
 int main() {
+  cout << endl;  // Basic program info
+  cout << "Lab 1, Write Array Nth Backwards" << endl;
+  cout << "Programmer: Daniel Roberts" << endl;
+  cout << "Editor(s) used: VS Code" << endl;
+  cout << "Compiler(s) used: g++ -std=c++17 -Wall" << endl;
+  cout << "File: " << __FILE__ << endl;
+  cout << "Compiled: " << __DATE__ << " at " << __TIME__ << endl << endl;
+
   vector<tuple<const char*, int, int, int>> args;
   vector<string> expectedOutputs;
 

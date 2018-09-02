@@ -27,22 +27,22 @@ int main() {
   cout << "File: " << __FILE__ << endl;
   cout << "Compiled: " << __DATE__ << " at " << __TIME__ << endl << endl;
 
-  // TODO: Define the number of tests at the beginning of the program
-  //         to remove any 'magic numbers'
+  const int TEST_COUNT = 4;
 
   int passed{};  // number of tests passed
 
   // TODO: Refactor args to be filled from a file or something more efficient
-  const char* inputs[4]{"abc123", "hello", "hello", "c1c1c1"};
-  const char* expectedOutputs[4]{"2ca", "olleh", "l", "ccc"};
+  const char* inputs[TEST_COUNT]{"abc123", "hello", "hello", "c1c1c1"};
+  const char* expectedOutputs[TEST_COUNT]{"2ca", "olleh", "l", "ccc"};
+  const int nVals[TEST_COUNT]{2, 1, 3, 2};
 
   vector<tuple<const char*, int, int, int>> args;
-  args.push_back(make_tuple(inputs[0], 0, strlen(inputs[0]), 2));
-  args.push_back(make_tuple(inputs[1], 0, strlen(inputs[1]), 1));
-  args.push_back(make_tuple(inputs[2], 0, strlen(inputs[2]), 3));
-  args.push_back(make_tuple(inputs[3], 0, strlen(inputs[3]), 2));
 
-  for (size_t i{}; i < args.size(); i++) {
+  for (size_t i {} i < TEST_COUNT; i++) {  // populate args vector
+    args.push_back(make_tuple(inputs[i], 0, strlen(inputs[i]), nVals[i]));
+  }
+
+  for (size_t i{}; i < TEST_COUNT; i++) {  // execute tests
     testInstance test{writeArrayNthBackward, args[i], expectedOutputs[i]};
 
     passed += test.passed() ? 1 : 0;
@@ -52,7 +52,7 @@ int main() {
   //         (ex. percentage passed, specific info on failed tests, etc.)
   // TODO: Utilize color change and formatting to improve
   //       the visibility of the test results ... and make it look cooler
-  cout << passed << " of " << args.size() << " tests passed!" << endl << endl;
+  cout << passed << " of " << TEST_COUNT << " tests passed!" << endl << endl;
 
   return 0;
 }

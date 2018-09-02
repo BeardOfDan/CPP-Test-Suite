@@ -1,6 +1,8 @@
 
 .vscode
 
+*.dSYM
+
 *.test
 
 # a miscelaneous file, the equivilant of scratch paper

@@ -120,16 +120,15 @@ class Foo {
     return passed() ? "passed" : "failed";
   }
 
+  // Type overloads
   operator int() { return (passed() ? 1 : 0); }
-
   operator bool() { return passed(); }
-
   operator string() { return passedStr(); }
-
-  const string description;
 
  private:
   const inputType actual;  // the actual value, to be used for testing
+
+  const string description;  // describes the test being performed
 
   bool failed;  // Initially false, but a failed test turns it true
 

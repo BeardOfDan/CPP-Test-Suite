@@ -13,6 +13,7 @@ using std::vector;
 
 #include <string>
 using std::string;
+using std::to_string;
 
 // TEST instanceRunning wrapper
 // accept a vector (of tuples?) of everything
@@ -46,9 +47,15 @@ class Foo {
 
   // use an optional parameter to setup the 'failed' version, not the input
 
-  Foo(inputType input, inputType ev, bool f = false,
-      string fr = "Some failure description")
-      : a{input}, eVal{a + a}, failed{f}, failureReport{fr} {
+  // add in optional parameter for vector of lambdas
+  // The lambdas would be written by the tester, but not invoked
+  // They can be invoked with a method
+  // This method will accept an optional parameter, numLambda's to run
+  // There will be an internal iterator that is incremented each time
+  // a lambda runs. If iterator !< lambda.size(), then go to next
+  // method in the chain
+  Foo(inputType input, bool f = false, string fr = "Created as failed test")
+      : actual{input}, failed{f}, failureReport{fr} {
     // cout << "constructor | input: " << input << endl;
   }
 
@@ -75,18 +82,21 @@ class Foo {
     return *this;
   }
 
-  Foo& getMe() {
-    if (!failed) {
+  // Returns this class (to enable method chaining)
+  Foo& getMe() { return *this; }
+
+  Foo& greaterThan(inputType test) {
+    if (failed) {
+      cout << "Skipping since failed previous test" << endl;
+      return getMe();
+    }
+
+    if (actual > test) {
       return *this;
     }
 
-    return getFailed();
-  }
-
-  Foo& greaterThan(inputType b) {
-    if (a > b) {
-      return *this;
-    }
+    failureReport =
+        "Expected " + to_string(a) + " to be greater than " + to_string(b);
     return getFailed();
   }
 
@@ -112,36 +122,37 @@ class Foo {
     // be linked in purpose/value
   }
 
-  string passedStr() { return (passed()) ? "passed" : "failed"; }
+  string passedStr(bool verbose = true) {
+    return (passed()) ? "passed"
+                      : (verbose ? ("failed: " + failureReport) : "failed");
+  }
 
-  inputType eVal;  // expected value
-
-  bool failed;  // will be true for failed tests
+  // inputType eVal;  // expected value
 
   string failureReport;  // should be used if
 
  private:
+  bool failed;  // will be true for failed tests
 };
 
 int main() {
-  Foo f{7, 14};
+  Foo f{7};
 
   auto a = f;
 
   auto b = a.getMe();
 
+  cout << endl << "a: " << a.greaterThan(9001).passedStr() << endl << endl;
+
   cout << endl << "b: " << b.greaterThan(-3).passedStr() << endl << endl;
 
   []() {
-    Foo c{9, 5, true};
-    cout << "  c will be failed, because of expectedValue constructor parameter"
-         << endl;
+    Foo c{9, true};
     cout << "c: " << c.greaterThan(-3).passedStr() << endl;
   }();
 
   []() {
-    Foo d{9, 18};
-
+    Foo d{9};
     cout << endl << "d: " << d.greaterThan(11).passedStr() << endl;  // test
   }();
 

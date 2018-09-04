@@ -107,17 +107,39 @@ class Foo {
   // This will allow for anticipation of falure of certain tests
   // as a test itself, obviously, care should be used when
   // employing such a method
-  
+  Foo& toHaveFailed(string customFailureReport = "") {
+    customFailureReport = (customFailureReport.length() > 0)
+                              ? customFailureReport
+                              : "Expected a failure prior to this point";
 
+    if (failed) {
+      failed = false;  // failure was passing, so failure is now false
+      return getMe();
+    }
 
+    failureReport = customFailureReport;
+    return getFailed();
+  }
+
+  // return the variable that gets tested
+  // it is the actual value, because it might not be the expected one
+  //   ex. It could be the output of a function with certain args
   inputType getActual() { return actual; }
 
   bool passed() { return !failed; }
 
   // TODO: Refactor name to report string,
   // it will more accurately describe what it will do
-  string passedStr(bool verbose = true) {
+  string passedStr(bool verbose = true, bool prefaced = true) {
     if (verbose) {
+      if (prefaced) {
+        return passed()
+                   ? ("passed: \"Expect " + to_string(actual) + " " +
+                      description + "\"")
+                   : ("failed: \"Expect " + to_string(actual) + " " +
+                      description + "\"\n  " + failureReport + "\n  skipped " +
+                      to_string(skippedTests) + " tests.");
+      }
       return passed() ? ("passed: \"" + description + "\"")
                       : ("failed: \"" + description + "\"\n  " + failureReport +
                          "\n  skipped " + to_string(skippedTests) + " tests.");
@@ -131,6 +153,7 @@ class Foo {
   operator string() { return passedStr(); }
 
  private:
+  // This is private because it is an internal method
   Foo& comparisonBody(std::function<bool(int, int)> comparison,
                       inputType actual, inputType test,
                       string customFailureReport) {
@@ -156,18 +179,19 @@ class Foo {
   string failureReport;
 
   int skippedTests = 0;
+  int testsPerformed = 0;  // TODO: Update the code to update this variable
 };
 
 int main() {
   cout << endl;  // formatting
 
-  Foo f{7, "Expect to be greater than all numbers in an array"};
+  Foo f{7, "to be greater than all numbers in an array"};
 
   auto a = f;
 
-  auto b = Foo(a.getActual(), "Expect to be greater than -3");
+  auto b = Foo(a.getActual(), "to be greater than -3");
 
-  int vals[]{1, 2, 3, 4, 5, 9};
+  int vals[]{1, 2, 3, 4, 5, 6};
 
   cout << "a: "
        << (string)(a.greaterThan(
@@ -205,11 +229,11 @@ int main() {
 
   auto alpha = []() {
     Foo c{9, "Expect to 'fail' due to constructor argument", true};
-    cout << "c: " << c.greaterThan(-3).passedStr() << endl;
+    cout << "c: " << c.toHaveFailed().passedStr(true, false) << endl;
   };
 
   []() {
-    Foo d{9, "Expect to be less than a given number"};
+    Foo d{9, "to be less than a given number"};
     cout << "d: " << d.lessThan(11).passedStr() << endl;  // test
   }();
 

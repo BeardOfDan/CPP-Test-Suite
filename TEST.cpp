@@ -81,6 +81,9 @@ class Foo {
   // Returns this class (to enable method chaining)
   Foo& getMe() { return *this; }
 
+  // TODO: Add an optional string param for failure report (for when you have a
+  // custom comparison lambda)
+  // template <typename rValType>
   Foo& greaterThan(inputType test,
                    std::function<bool(int, int)> comparison =
                        [](int actual, int test) { return (actual > test); }) {
@@ -89,7 +92,6 @@ class Foo {
       return getMe();
     }
 
-    // lambda gets put inside the if test
     if (comparison(actual, test)) {  // continue chain
       return *this;
     } else {  // failed the test
@@ -137,7 +139,22 @@ int main() {
 
   auto b = a.getMe();
 
-  cout << "a: " << (string)a.greaterThan(9001) << endl;
+  int vals[]{1, 2, 3, 4, 5};
+
+  cout << "a: "
+       << (string)(a.greaterThan(vals[0],
+                                 [vals](int a, int b) -> bool {
+                                   const int size =
+                                       (sizeof(vals) / sizeof(vals[0]));
+
+                                   for (size_t i{}; i < size; i++) {
+                                     if (a <= vals[i]) {
+                                       return false;
+                                     }
+                                   }
+                                   return true;
+                                 }))
+       << endl;
 
   cout << "b: "
        << (b.greaterThan(-3, [](int a, int b) -> bool { return (a > b); })

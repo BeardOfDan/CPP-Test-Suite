@@ -43,10 +43,6 @@ using std::to_string;
 template <typename inputType>
 class Foo {
  public:
-  // Try to find a generic 'class pointer'
-
-  // use an optional parameter to setup the 'failed' version, not the input
-
   // add in optional parameter for vector of lambdas
   // The lambdas would be written by the tester, but not invoked
   // They can be invoked with a method
@@ -54,85 +50,63 @@ class Foo {
   // There will be an internal iterator that is incremented each time
   // a lambda runs. If iterator !< lambda.size(), then go to next
   // method in the chain
-  Foo(inputType input, bool f = false, string fr = "Created as failed test")
+  Foo(inputType input, bool f = false, string fr = "Default failure report")
       : actual{input}, failed{f}, failureReport{fr} {
-    // cout << "constructor | input: " << input << endl;
+    if (failed) {
+      failureReport = "Created as failed test through constructor argument";
+    }
   }
 
-  ~Foo() {
-    // cout << endl
-    //      << "destructor | input: " << a
-    //      << endl;  // temp use of input as a unique identifier. Should
-    //      probably
-    //                // try to find a way to serialize these things
-
-    // if (failed) {
-    //   cout << "Failure Report: " << failureReport << endl;
-    // }
-    // cout << endl;  // formatting
-  }
+  ~Foo() {}
 
   inputType a;
 
   Foo& getFailed() {
-    // Foo neg{a, eVal, true, failureReport};
-    // return neg;
-
     failed = true;
-    return *this;
+    return getMe();
   }
 
   // Returns this class (to enable method chaining)
   Foo& getMe() { return *this; }
 
   Foo& greaterThan(inputType test) {
-    if (failed) {
-      cout << "Skipping since failed previous test" << endl;
+    if (failed) {  // don't run further tests
+      skippedTests++;
       return getMe();
     }
 
-    if (actual > test) {
+    if (actual > test) {  // continue chain
       return *this;
     }
 
-    failureReport =
-        "Expected " + to_string(a) + " to be greater than " + to_string(b);
+    // Reaching this point in the method indicates test failure
+
+    failureReport = "Expected " + to_string(actual) + " to be greater than " +
+                    to_string(test);
     return getFailed();
   }
 
-  inputType getA() {
-    if (failed) {
-      inputType unInitializedVal{};  // not initializing some variable of type
-                                     // 'inputType' to handle the mutability of
-                                     // variable type across different use cases
-      return unInitializedVal;
-    }
-    return a;
-  }
+  inputType getActual() { return actual; }
 
-  bool passed() {
-    return !failed;  // if all of the tests in the chain passed
-    // ...technically might not need the 'getFailed' method,
-    // since can just use this and have whatever would trigger
-    // the 'getFailed' method set 'failed' to true
-    // and possibly some other, internal, var to true, to skip
-    // the running of any further tests in the chain (for efficiency)
-    // (and for ease of only needing one failure report per chain of tests)
-    // Could just use failed instead of another var, since it would always
-    // be linked in purpose/value
-  }
+  bool passed() { return !failed; }
 
   string passedStr(bool verbose = true) {
     return (passed()) ? "passed"
                       : (verbose ? ("failed: " + failureReport) : "failed");
   }
 
-  // inputType eVal;  // expected value
-
-  string failureReport;  // should be used if
-
  private:
+  inputType actual;  // the actual value, to be used for testing
+
   bool failed;  // will be true for failed tests
+
+  string failureReport;
+
+  // For vector of lambdas
+  int lambdaCount = 0;
+  int lambdaIterator = 0;
+
+  int skippedTests = 0;
 };
 
 int main() {
@@ -142,7 +116,7 @@ int main() {
 
   auto b = a.getMe();
 
-  cout << endl << "a: " << a.greaterThan(9001).passedStr() << endl << endl;
+  cout << endl << "a: " << a.greaterThan(9001).passedStr() << endl;
 
   cout << endl << "b: " << b.greaterThan(-3).passedStr() << endl << endl;
 

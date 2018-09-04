@@ -5,6 +5,8 @@
 
 *.test
 
+TEST
+
 # a miscelaneous file, the equivilant of scratch paper
 misc.cpp
 misc

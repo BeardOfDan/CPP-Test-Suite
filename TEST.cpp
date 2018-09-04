@@ -55,13 +55,9 @@ using std::to_string;
 template <typename inputType>
 class Foo {
  public:
-  // add in optional parameter for vector of lambdas
-  // The lambdas would be written by the tester, but not invoked
-  // They can be invoked with a method
-  // This method will accept an optional parameter, numLambda's to run
-  // There will be an internal iterator that is incremented each time
-  // a lambda runs. If iterator !< lambda.size(), then go to next
-  // method in the chain
+  // TODO: Add string description
+  //   good for describing what test failed in error report
+  //   or to output what tests passed
   Foo(inputType input, bool f = false, string fr = "Default failure report")
       : actual{input}, failed{f}, failureReport{fr} {
     if (failed) {
@@ -71,8 +67,6 @@ class Foo {
 
   ~Foo() {}
 
-  inputType a;
-
   Foo& getFailed() {
     failed = true;
     return getMe();
@@ -81,22 +75,22 @@ class Foo {
   // Returns this class (to enable method chaining)
   Foo& getMe() { return *this; }
 
-  // TODO: Add an optional string param for failure report (for when you have a
-  // custom comparison lambda)
-  // template <typename rValType>
   Foo& greaterThan(inputType test,
                    std::function<bool(int, int)> comparison =
-                       [](int actual, int test) { return (actual > test); }) {
-    if (failed) {  // don't run further tests
+                       [](int actual, int test) { return (actual > test); },
+                   string customFailureReport = "") {
+    if (failed) {
       skippedTests++;
-      return getMe();
+      return getMe();  // don't run further tests
     }
 
-    if (comparison(actual, test)) {  // continue chain
-      return *this;
-    } else {  // failed the test
-      failureReport = "Expected " + to_string(actual) + " to be greater than " +
-                      to_string(test);
+    if (comparison(actual, test)) {
+      return getMe();  // continue chain
+    } else {           // failed the test
+      failureReport = (customFailureReport.length() > 0)
+                          ? customFailureReport
+                          : "Expected " + to_string(actual) +
+                                " to be greater than " + to_string(test);
       return getFailed();
     }
   }
@@ -106,8 +100,8 @@ class Foo {
   bool passed() { return !failed; }
 
   string passedStr(bool verbose = true) {
-    return (passed()) ? "passed"
-                      : (verbose ? ("failed: " + failureReport) : "failed");
+    return passed() ? "passed"
+                    : (verbose ? ("failed: " + failureReport) : "failed");
   }
 
   operator int() { return (passed() ? 1 : 0); }
@@ -117,15 +111,11 @@ class Foo {
   operator string() { return passedStr(); }
 
  private:
-  inputType actual;  // the actual value, to be used for testing
+  const inputType actual;  // the actual value, to be used for testing
 
-  bool failed;  // will be true for failed tests
+  bool failed;  // Initially false, but a failed test turns it true
 
   string failureReport;
-
-  // For vector of lambdas
-  int lambdaCount = 0;
-  int lambdaIterator = 0;
 
   int skippedTests = 0;
 };
@@ -137,23 +127,37 @@ int main() {
 
   auto a = f;
 
-  auto b = a.getMe();
+  auto b = Foo(a.getActual());
 
-  int vals[]{1, 2, 3, 4, 5};
+  int vals[]{1, 2, 3, 4, 5, 9};
 
   cout << "a: "
-       << (string)(a.greaterThan(vals[0],
-                                 [vals](int a, int b) -> bool {
-                                   const int size =
-                                       (sizeof(vals) / sizeof(vals[0]));
+       << (string)(a.greaterThan(
+              vals[0],
+              // lambda for custom comparison
+              [vals](int a, int b) -> bool {
+                const int size = (sizeof(vals) / sizeof(vals[0]));
 
-                                   for (size_t i{}; i < size; i++) {
-                                     if (a <= vals[i]) {
-                                       return false;
-                                     }
-                                   }
-                                   return true;
-                                 }))
+                for (size_t i{}; i < size; i++) {
+                  if (a <= vals[i]) {
+                    return false;
+                  }
+                }
+                return true;
+              },  // end of lambda
+              // Expression resolves to custom failure report argument
+              "expected " + to_string(a.getActual()) +
+                  " to be greater than all of the values in "
+                  "the array " +
+                  [vals]() -> string {
+                string s = "[ ";
+                const int size = (sizeof(vals) / sizeof(vals[0]));
+                for (size_t i{}; i < size; i++) {
+                  s += to_string(vals[i]) + ((i + 1 < size) ? ", " : " ");
+                }
+                return (s + "]");
+              }()  // end of custom failure report argument expression
+              ))
        << endl;
 
   cout << "b: "
@@ -172,10 +176,6 @@ int main() {
   }();
 
   alpha();  // the lambda for 'c'
-  // if generic lambda signature =
-  //   std::function<returnType (arg1Type, arg2Type, ...)>
-  // then a vector of lambdas would look like
-  //   vector<function<void ()> lambdasVectorName;
 
   cout << endl;  // formatting
 

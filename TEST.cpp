@@ -33,56 +33,60 @@ using std::to_string;
 // for(int i{}; i < vector<everything>.size(); i++) {
 //   bool passed = false;
 //   ... exec test and put pass/fail value into passed
-//         use this file's class (currently named Foo) to exec tests
-//         ex. Foo test{args here};
+//         use this file's class (currently named Expect
+// ) to exec tests
+//         ex. Expect
+//  test{args here};
 //             const passed = test.meth1().meth2.meth3()... .passed();
 //   if (passed) {
 //     // do little here... move onto next test...
 //   } else {
 //     auto fds = new failureDataStruct(iteration=i,
 //     arguments=vector<everything>[i].args, expectedOutput, actualOutput);
-//     // should probably have Foo class use a method to return fds as a value
+//     // should probably have Expect
+// class use a method to return fds as a value
 //     // then can just push that method's return onto vector of fds's
 //     failureDataStruct.push_back(fds);
 //   }
 // }
-// cout << vector<everything>.size() - vector<failureDataStruct>.size() << " of
-// " << vector<everything>.size() tests passed! << endl;
-// for(let i = 0; i < vector<failureDataStruct>.size(); i++) {
-//   failureDataStruct[i].generateReport(); // cout's a report of the failure
+// cout << vector<everything>.size() - vector<failureDataStruct>.size() << "
+// of " << vector<everything>.size() tests passed! << endl; for(let i = 0; i
+// < vector<failureDataStruct>.size(); i++) {
+//   failureDataStruct[i].generateReport(); // cout's a report of the
+//   failure
 // }
 
-// TODO: Create an internal variable (vector?) to hold a record of the tests and
-// the input to those tests for the final report
-// Ex. instance(17).greaterThan(5).lessThan(33) would generate:
+// TODO: Create an internal variable (vector?) to hold a record of the tests
+// and the input to those tests for the final report Ex.
+// instance(17).greaterThan(5).lessThan(33) would generate:
 //   passed: Expected 17 to be greater than 5 but less than 33
 // This would, presumably, have implications for the default and
 // custom failureReport, along with passedStr()
 template <typename inputType>
-class Foo {
+class Expect {
  public:
-  Foo(inputType input, string d, bool f = false,
-      string fr = "Default failure report")
+  Expect(inputType input, string d, bool f = false,
+         string fr = "Default failure report")
       : actual{input}, description{d}, failed{f}, failureReport{fr} {
     if (failed) {
       failureReport = "Created as failed test through constructor argument";
     }
   }
 
-  ~Foo() {}
+  ~Expect() {}
 
-  Foo& getFailed() {
+  Expect& getFailed() {
     failed = true;
     return getMe();
   }
 
   // Returns this class (to enable method chaining)
-  Foo& getMe() { return *this; }
+  Expect& getMe() { return *this; }
 
-  Foo& greaterThan(inputType test,
-                   std::function<bool(int, int)> comparison =
-                       [](int actual, int test) { return (actual > test); },
-                   string customFailureReport = "") {
+  Expect& greaterThan(inputType test,
+                      std::function<bool(int, int)> comparison =
+                          [](int actual, int test) { return (actual > test); },
+                      string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
                               : "Expected " + to_string(actual) +
@@ -91,10 +95,10 @@ class Foo {
     return comparisonBody(comparison, actual, test, customFailureReport);
   }
 
-  Foo& lessThan(inputType test,
-                std::function<bool(int, int)> comparison =
-                    [](int actual, int test) { return (actual < test); },
-                string customFailureReport = "") {
+  Expect& lessThan(inputType test,
+                   std::function<bool(int, int)> comparison =
+                       [](int actual, int test) { return (actual < test); },
+                   string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
                               : "Expected " + to_string(actual) +
@@ -107,7 +111,7 @@ class Foo {
   // This will allow for anticipation of falure of certain tests
   // as a test itself, obviously, care should be used when
   // employing such a method
-  Foo& toHaveFailed(string customFailureReport = "") {
+  Expect& toHaveFailed(string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
                               : "Expected a failure prior to this point";
@@ -154,9 +158,9 @@ class Foo {
 
  private:
   // This is private because it is an internal method
-  Foo& comparisonBody(std::function<bool(int, int)> comparison,
-                      inputType actual, inputType test,
-                      string customFailureReport) {
+  Expect& comparisonBody(std::function<bool(int, int)> comparison,
+                         inputType actual, inputType test,
+                         string customFailureReport) {
     if (failed) {
       skippedTests++;
       return getMe();  // don't run further tests
@@ -185,11 +189,11 @@ class Foo {
 int main() {
   cout << endl;  // formatting
 
-  Foo f{7, "to be greater than all numbers in an array"};
+  Expect f{7, "to be greater than all numbers in an array"};
 
   auto a = f;
 
-  auto b = Foo(a.getActual(), "to be greater than -3");
+  auto b = Expect(a.getActual(), "to be greater than -3");
 
   int vals[]{1, 2, 3, 4, 5, 6};
 
@@ -228,12 +232,12 @@ int main() {
        << endl;
 
   auto alpha = []() {
-    Foo c{9, "Expect to 'fail' due to constructor argument", true};
+    Expect c{9, "Expect to 'fail' due to constructor argument", true};
     cout << "c: " << c.toHaveFailed().passedStr(true, false) << endl;
   };
 
   []() {
-    Foo d{9, "to be less than a given number"};
+    Expect d{9, "to be less than a given number"};
     cout << "d: " << d.lessThan(11).passedStr() << endl;  // test
   }();
 

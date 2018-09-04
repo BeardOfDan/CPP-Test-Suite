@@ -80,24 +80,12 @@ class Foo {
                    std::function<bool(int, int)> comparison =
                        [](int actual, int test) { return (actual > test); },
                    string customFailureReport = "") {
-    // TODO: Refactor contents into a general comparison method
-    // Otherwise, other comparison methods will have a lot of
-    // repitition of this same code
+    customFailureReport = (customFailureReport.length() > 0)
+                              ? customFailureReport
+                              : "Expected " + to_string(actual) +
+                                    " to be greater than " + to_string(test);
 
-    if (failed) {
-      skippedTests++;
-      return getMe();  // don't run further tests
-    }
-
-    if (comparison(actual, test)) {
-      return getMe();  // continue chain
-    } else {           // failed the test
-      failureReport = (customFailureReport.length() > 0)
-                          ? customFailureReport
-                          : "Expected " + to_string(actual) +
-                                " to be greater than " + to_string(test);
-      return getFailed();
-    }
+    return comparisonBody(comparison, actual, test, customFailureReport);
   }
 
   // TODO: Create a toHaveFailed and/or toBeFalse method
@@ -126,6 +114,22 @@ class Foo {
   operator string() { return passedStr(); }
 
  private:
+  Foo& comparisonBody(std::function<bool(int, int)> comparison,
+                      inputType actual, inputType test,
+                      string customFailureReport) {
+    if (failed) {
+      skippedTests++;
+      return getMe();  // don't run further tests
+    }
+
+    if (comparison(actual, test)) {
+      return getMe();  // continue chain
+    } else {           // failed the test
+      failureReport = customFailureReport;
+      return getFailed();
+    }
+  }
+
   const inputType actual;  // the actual value, to be used for testing
 
   const string description;  // describes the test being performed
@@ -188,7 +192,7 @@ int main() {
   };
 
   []() {
-    Foo d{9, "Expect to be greater than a number"};
+    Foo d{9, "Expect to be greater than a given number"};
     cout << "d: " << d.greaterThan(11).passedStr() << endl;  // test
   }();
 
@@ -198,19 +202,3 @@ int main() {
 
   return 0;
 }
-
-//
-// Randomly though up method for creating that syntax
-//
-// DEFINE_STRUCTS(name, value)
-//   struct #name {string name = value}
-//
-// some loop that goes through all of the defined vars (strings),
-// such as SquareRootTest, to create structs, then the defined TEST
-// functions, such as below, are simply overloading the function
-
-// TEST (SquareRootTest, PositiveNos) {
-//     EXPECT_EQ (18.0, square-root (324.0));
-//     EXPECT_EQ (25.4, square-root (645.16));
-//     EXPECT_EQ (50.3321, square-root (2533.310224));
-// }

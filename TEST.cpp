@@ -101,7 +101,9 @@ class Foo {
 
   string passedStr(bool verbose = true) {
     return passed() ? "passed"
-                    : (verbose ? ("failed: " + failureReport) : "failed");
+                    : (verbose ? ("failed: " + failureReport + "\n  skipped " +
+                                  to_string(skippedTests) + " tests.")
+                               : "failed");
   }
 
   operator int() { return (passed() ? 1 : 0); }

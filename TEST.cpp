@@ -4,6 +4,12 @@
 // NOTE: This is currently an idea in a VERY raw form.
 // The goal is to create something like the 'expect' library (for JS)
 
+// NOTE/QUESTION: What happens if you define a pointer to an empty lambda
+// in a class, then return the pointer (through a method), then define the
+// lambda in that (the caller's) scope, then go back in the class and execute
+// that lambda?
+// Ex. compiler error? awesome functionality? etc.
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -75,21 +81,22 @@ class Foo {
   // Returns this class (to enable method chaining)
   Foo& getMe() { return *this; }
 
-  Foo& greaterThan(inputType test) {
+  Foo& greaterThan(inputType test,
+                   std::function<bool(int, int)> comparison =
+                       [](int actual, int test) { return (actual > test); }) {
     if (failed) {  // don't run further tests
       skippedTests++;
       return getMe();
     }
 
-    if (actual > test) {  // continue chain
+    // lambda gets put inside the if test
+    if (comparison(actual, test)) {  // continue chain
       return *this;
+    } else {  // failed the test
+      failureReport = "Expected " + to_string(actual) + " to be greater than " +
+                      to_string(test);
+      return getFailed();
     }
-
-    // Reaching this point in the method indicates test failure
-
-    failureReport = "Expected " + to_string(actual) + " to be greater than " +
-                    to_string(test);
-    return getFailed();
   }
 
   inputType getActual() { return actual; }
@@ -132,7 +139,10 @@ int main() {
 
   cout << "a: " << (string)a.greaterThan(9001) << endl;
 
-  cout << "b: " << (b.greaterThan(-3).passedStr()) << endl;
+  cout << "b: "
+       << (b.greaterThan(-3, [](int a, int b) -> bool { return (a > b); })
+               .passedStr())
+       << endl;
 
   auto alpha = []() {
     Foo c{9, true};
@@ -154,3 +164,19 @@ int main() {
 
   return 0;
 }
+
+//
+// Randomly though up method for creating that syntax
+//
+// DEFINE_STRUCTS(name, value)
+//   struct #name {string name = value}
+//
+// some loop that goes through all of the defined vars (strings),
+// such as SquareRootTest, to create structs, then the defined TEST
+// functions, such as below, are simply overloading the function
+
+// TEST (SquareRootTest, PositiveNos) {
+//     EXPECT_EQ (18.0, square-root (324.0));
+//     EXPECT_EQ (25.4, square-root (645.16));
+//     EXPECT_EQ (50.3321, square-root (2533.310224));
+// }

@@ -77,11 +77,11 @@ class Expect {
 
   Expect& getFailed() {
     failed = true;
-    return getMe();
+    return getThis();
   }
 
   // Returns this class (to enable method chaining)
-  Expect& getMe() { return *this; }
+  Expect& getThis() { return *this; }
 
   Expect& greaterThan(inputType test,
                       std::function<bool(int, int)> comparison =
@@ -118,7 +118,7 @@ class Expect {
 
     if (failed) {
       failed = false;  // failure was passing, so failure is now false
-      return getMe();
+      return getThis();
     }
 
     failureReport = customFailureReport;
@@ -163,12 +163,12 @@ class Expect {
                          string customFailureReport) {
     if (failed) {
       skippedTests++;
-      return getMe();  // don't run further tests
+      return getThis();  // don't run further tests
     }
 
     if (comparison(actual, test)) {
-      return getMe();  // continue chain
-    } else {           // failed the test
+      return getThis();  // continue chain
+    } else {             // failed the test
       failureReport = customFailureReport;
       return getFailed();
     }

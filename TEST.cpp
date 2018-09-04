@@ -58,8 +58,9 @@ class Foo {
   // TODO: Add string description
   //   good for describing what test failed in error report
   //   or to output what tests passed
-  Foo(inputType input, bool f = false, string fr = "Default failure report")
-      : actual{input}, failed{f}, failureReport{fr} {
+  Foo(inputType input, string d, bool f = false,
+      string fr = "Default failure report")
+      : actual{input}, description{d}, failed{f}, failureReport{fr} {
     if (failed) {
       failureReport = "Created as failed test through constructor argument";
     }
@@ -79,6 +80,10 @@ class Foo {
                    std::function<bool(int, int)> comparison =
                        [](int actual, int test) { return (actual > test); },
                    string customFailureReport = "") {
+    // TODO: Refactor contents into a general comparison method
+    // Otherwise, other comparison methods will have a lot of
+    // repitition of this same code
+
     if (failed) {
       skippedTests++;
       return getMe();  // don't run further tests
@@ -95,15 +100,24 @@ class Foo {
     }
   }
 
+  // TODO: Create a toHaveFailed and/or toBeFalse method
+  // This will allow for anticipation of falure of certain tests
+  // as a test itself, obviously, care should be used when
+  // employing such a method
+
   inputType getActual() { return actual; }
 
   bool passed() { return !failed; }
 
+  // TODO: Refactor name to report string,
+  // it will more accurately describe what it will do
   string passedStr(bool verbose = true) {
-    return passed() ? "passed"
-                    : (verbose ? ("failed: " + failureReport + "\n  skipped " +
-                                  to_string(skippedTests) + " tests.")
-                               : "failed");
+    if (verbose) {
+      return passed() ? ("passed: \"" + description + "\"")
+                      : ("failed: \"" + description + "\"\n  " + failureReport +
+                         "\n  skipped " + to_string(skippedTests) + " tests.");
+    }
+    return passed() ? "passed" : "failed";
   }
 
   operator int() { return (passed() ? 1 : 0); }
@@ -111,6 +125,8 @@ class Foo {
   operator bool() { return passed(); }
 
   operator string() { return passedStr(); }
+
+  const string description;
 
  private:
   const inputType actual;  // the actual value, to be used for testing
@@ -125,11 +141,11 @@ class Foo {
 int main() {
   cout << endl;  // formatting
 
-  Foo f{7};
+  Foo f{7, "Expect to be greater than all numbers in an array"};
 
   auto a = f;
 
-  auto b = Foo(a.getActual());
+  auto b = Foo(a.getActual(), "Expect to be greater than -3");
 
   int vals[]{1, 2, 3, 4, 5, 9};
 
@@ -168,12 +184,12 @@ int main() {
        << endl;
 
   auto alpha = []() {
-    Foo c{9, true};
+    Foo c{9, "Expect to 'fail' due to constructor argument", true};
     cout << "c: " << c.greaterThan(-3).passedStr() << endl;
   };
 
   []() {
-    Foo d{9};
+    Foo d{9, "Expect to be greater than a number"};
     cout << "d: " << d.greaterThan(11).passedStr() << endl;  // test
   }();
 

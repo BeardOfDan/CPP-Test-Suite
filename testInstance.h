@@ -16,37 +16,83 @@ using std::apply;
 using std::get;
 using std::tuple;
 
-template <typename Func, typename tup>
-string defaultFunc(Func f, tup t) {
-  redirectOutput output;
+#include "enumeratedTestType.h"
 
-  apply(f, t);
+// TODO: Create adjustable comparisons
+//   Ex. compound data-types with equal values and regular framework methods
+//   (greater/less than, not null, exists, etc.)
 
-  return output.getContents();
-}
-
+template <typename outputFormat>
 class testInstance {
  public:
-  template <typename Func, typename tup>
-  testInstance(Func f, tup t, string eo) : expectedOutput{eo} {
-    // Initializing inside the braces to avoid 'undefined' errors
-    // and issues resulting from use of template
-    Func functionToTest{f};
-    tup arguments{t};
+  template <typename Func,
+            typename tup>  // TODO: Update type from string to Enum
+  testInstance(Func functionToTest, tup arguments, outputFormat eo,
+               enumeratedTestType ett = consoleStr)
+      : expectedOutput{eo}, testType{ett} {
+    // validate type, throw error if invalid,
+    // might not need to do anymore, after is refactored to enum
+
+    // use type to discern which method to use to run test
+    // and what data to store
+    switch (testType) {
+      case consoleStr:
+        testCout(functionToTest, arguments);
+        break;
+
+        // case returnVal:
+        //   testReturn(functionToTest, arguments);
+        //   break;
+
+        // default:
+        // throw error
+    }
 
     // execute test
-    redirectOutput output;
-    apply(functionToTest, arguments);
-    actualOutput = output.getContents();
-  }  // Note: the destructor for redirectOutput is called here
-     // (restores cout's usual flow)
+    // redirectOutput output;
+    // apply(functionToTest, arguments);
+
+    // // actualOutput = output.getContents();
+    // capturedOutput = output.getContents();
+  }
 
   ~testInstance() {}
 
-  bool passed() { return expectedOutput == actualOutput; }
+  // The 'test...' methods execute the test and populate class data
+  // they do not return anything
 
-  string expectedOutput;
-  string actualOutput;
+  template <typename Func, typename tup>
+  void testCout(Func functionToTest, tup arguments) {
+    redirectOutput output;
+    apply(functionToTest, arguments);
+    capturedOutput = output.getContents();
+  }
+
+  // template <typename Func, typename tup>
+  // void testReturn(Func functionToTest, tup arguments) {
+  //   if (typeid(functionToTest) != 'void')
+  //     actualOutput = apply(functionToTest, arguments);
+  // }
+
+  bool passed() {
+    switch (testType) {
+      case consoleStr:
+        return expectedOutput == capturedOutput;
+        break;
+
+        // case returnVal:
+        //   return expectedOutput == actualOutput;
+        //   break;
+
+        // default:
+        // throw error
+    }
+  }
+
+  outputFormat expectedOutput;
+  outputFormat actualOutput;
+  string capturedOutput;
+  enumeratedTestType testType;
 
  private:
 };

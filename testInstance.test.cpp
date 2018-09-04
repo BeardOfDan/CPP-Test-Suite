@@ -44,7 +44,7 @@ int main() {
 
   vector<tuple<const char*, int, int, int> > args;
 
-  for (size_t i {} i < TEST_COUNT; i++) {  // populate args vector
+  for (size_t i{}; i < TEST_COUNT; i++) {  // populate args vector
     args.push_back(make_tuple(inputs[i], 0, strlen(inputs[i]), nVals[i]));
   }
 

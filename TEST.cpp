@@ -53,23 +53,26 @@ class Foo {
   }
 
   ~Foo() {
-    cout << endl
-         << "destructor | input: " << a
-         << endl;  // temp use of input as a unique identifier. Should probably
-                   // try to find a way to serialize these things
+    // cout << endl
+    //      << "destructor | input: " << a
+    //      << endl;  // temp use of input as a unique identifier. Should
+    //      probably
+    //                // try to find a way to serialize these things
 
-    if (failed) {
-      cout << "Failure Report: " << failureReport << endl;
-    }
-    cout << endl;  // formatting
+    // if (failed) {
+    //   cout << "Failure Report: " << failureReport << endl;
+    // }
+    // cout << endl;  // formatting
   }
 
   inputType a;
 
   Foo& getFailed() {
-    Foo neg{a, eVal, true, failureReport};
+    // Foo neg{a, eVal, true, failureReport};
+    // return neg;
 
-    return neg;
+    failed = true;
+    return *this;
   }
 
   Foo& getMe() {
@@ -109,6 +112,8 @@ class Foo {
     // be linked in purpose/value
   }
 
+  string passedStr() { return (passed()) ? "passed" : "failed"; }
+
   inputType eVal;  // expected value
 
   bool failed;  // will be true for failed tests
@@ -123,20 +128,21 @@ int main() {
 
   auto a = f;
 
-  auto b = a.getMe().getA();
+  auto b = a.getMe();
 
-  cout << "b: " << b << endl;
+  cout << endl << "b: " << b.greaterThan(-3).passedStr() << endl << endl;
 
   []() {
     Foo c{9, 5, true};
-
-    cout << "c: " << c.getA() << endl;
+    cout << "  c will be failed, because of expectedValue constructor parameter"
+         << endl;
+    cout << "c: " << c.greaterThan(-3).passedStr() << endl;
   }();
 
   []() {
     Foo d{9, 18};
 
-    cout << "d: " << endl;  // test
+    cout << endl << "d: " << d.greaterThan(11).passedStr() << endl;  // test
   }();
 
   return 0;

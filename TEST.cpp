@@ -52,12 +52,15 @@ using std::to_string;
 //   failureDataStruct[i].generateReport(); // cout's a report of the failure
 // }
 
+// TODO: Create an internal variable (vector?) to hold a record of the tests and
+// the input to those tests for the final report
+// Ex. instance(17).greaterThan(5).lessThan(33) would generate:
+//   passed: Expected 17 to be greater than 5 but less than 33
+// This would, presumably, have implications for the default and
+// custom failureReport, along with passedStr()
 template <typename inputType>
 class Foo {
  public:
-  // TODO: Add string description
-  //   good for describing what test failed in error report
-  //   or to output what tests passed
   Foo(inputType input, string d, bool f = false,
       string fr = "Default failure report")
       : actual{input}, description{d}, failed{f}, failureReport{fr} {
@@ -88,10 +91,24 @@ class Foo {
     return comparisonBody(comparison, actual, test, customFailureReport);
   }
 
+  Foo& lessThan(inputType test,
+                std::function<bool(int, int)> comparison =
+                    [](int actual, int test) { return (actual < test); },
+                string customFailureReport = "") {
+    customFailureReport = (customFailureReport.length() > 0)
+                              ? customFailureReport
+                              : "Expected " + to_string(actual) +
+                                    " to be less than " + to_string(test);
+
+    return comparisonBody(comparison, actual, test, customFailureReport);
+  }
+
   // TODO: Create a toHaveFailed and/or toBeFalse method
   // This will allow for anticipation of falure of certain tests
   // as a test itself, obviously, care should be used when
   // employing such a method
+  
+
 
   inputType getActual() { return actual; }
 
@@ -154,7 +171,7 @@ int main() {
 
   cout << "a: "
        << (string)(a.greaterThan(
-              vals[0],
+              vals[0],  // a dummy var to comply with type in function signature
               // lambda for custom comparison
               [vals](int a, int b) -> bool {
                 const int size = (sizeof(vals) / sizeof(vals[0]));
@@ -192,8 +209,8 @@ int main() {
   };
 
   []() {
-    Foo d{9, "Expect to be greater than a given number"};
-    cout << "d: " << d.greaterThan(11).passedStr() << endl;  // test
+    Foo d{9, "Expect to be less than a given number"};
+    cout << "d: " << d.lessThan(11).passedStr() << endl;  // test
   }();
 
   alpha();  // the lambda for 'c'

@@ -8,12 +8,18 @@
 using std::cout;
 using std::endl;
 
+#include <sstream>
+using std::ostream;
+
 #include <vector>
 using std::vector;
 
 #include <string>
 using std::string;
 using std::to_string;
+
+// arg part of function signature for lambda arg
+// std::function<returnType (arg1Type, arg2Type, ...)> lambdaName
 
 // TEST instanceRunning wrapper
 // accept a vector (of tuples?) of everything
@@ -95,6 +101,12 @@ class Foo {
                       : (verbose ? ("failed: " + failureReport) : "failed");
   }
 
+  operator int() { return (passed() ? 1 : 0); }
+
+  operator bool() { return passed(); }
+
+  operator string() { return passedStr(); }
+
  private:
   inputType actual;  // the actual value, to be used for testing
 
@@ -110,25 +122,35 @@ class Foo {
 };
 
 int main() {
+  cout << endl;  // formatting
+
   Foo f{7};
 
   auto a = f;
 
   auto b = a.getMe();
 
-  cout << endl << "a: " << a.greaterThan(9001).passedStr() << endl;
+  cout << "a: " << (string)a.greaterThan(9001) << endl;
 
-  cout << endl << "b: " << b.greaterThan(-3).passedStr() << endl << endl;
+  cout << "b: " << (b.greaterThan(-3).passedStr()) << endl;
 
-  []() {
+  auto alpha = []() {
     Foo c{9, true};
     cout << "c: " << c.greaterThan(-3).passedStr() << endl;
-  }();
+  };
 
   []() {
     Foo d{9};
-    cout << endl << "d: " << d.greaterThan(11).passedStr() << endl;  // test
+    cout << "d: " << d.greaterThan(11).passedStr() << endl;  // test
   }();
+
+  alpha();  // the lambda for 'c'
+  // if generic lambda signature =
+  //   std::function<returnType (arg1Type, arg2Type, ...)>
+  // then a vector of lambdas would look like
+  //   vector<function<void ()> lambdasVectorName;
+
+  cout << endl;  // formatting
 
   return 0;
 }

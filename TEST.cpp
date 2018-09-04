@@ -14,6 +14,31 @@ using std::vector;
 #include <string>
 using std::string;
 
+// TEST instanceRunning wrapper
+// accept a vector (of tuples?) of everything
+// vector failureDataStruct
+// for(int i{}; i < vector<everything>.size(); i++) {
+//   bool passed = false;
+//   ... exec test and put pass/fail value into passed
+//         use this file's class (currently named Foo) to exec tests
+//         ex. Foo test{args here};
+//             const passed = test.meth1().meth2.meth3()... .passed();
+//   if (passed) {
+//     // do little here... move onto next test...
+//   } else {
+//     auto fds = new failureDataStruct(iteration=i,
+//     arguments=vector<everything>[i].args, expectedOutput, actualOutput);
+//     // should probably have Foo class use a method to return fds as a value
+//     // then can just push that method's return onto vector of fds's
+//     failureDataStruct.push_back(fds);
+//   }
+// }
+// cout << vector<everything>.size() - vector<failureDataStruct>.size() << " of
+// " << vector<everything>.size() tests passed! << endl;
+// for(let i = 0; i < vector<failureDataStruct>.size(); i++) {
+//   failureDataStruct[i].generateReport(); // cout's a report of the failure
+// }
+
 template <typename inputType>
 class Foo {
  public:
@@ -72,6 +97,18 @@ class Foo {
     return a;
   }
 
+  bool passed() {
+    return !failed;  // if all of the tests in the chain passed
+    // ...technically might not need the 'getFailed' method,
+    // since can just use this and have whatever would trigger
+    // the 'getFailed' method set 'failed' to true
+    // and possibly some other, internal, var to true, to skip
+    // the running of any further tests in the chain (for efficiency)
+    // (and for ease of only needing one failure report per chain of tests)
+    // Could just use failed instead of another var, since it would always
+    // be linked in purpose/value
+  }
+
   inputType eVal;  // expected value
 
   bool failed;  // will be true for failed tests
@@ -94,6 +131,12 @@ int main() {
     Foo c{9, 5, true};
 
     cout << "c: " << c.getA() << endl;
+  }();
+
+  []() {
+    Foo d{9, 18};
+
+    cout << "d: " << endl;  // test
   }();
 
   return 0;

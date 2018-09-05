@@ -1,15 +1,6 @@
 // Initially from scratch.cpp
 //   A 'scratch' cpp file for me to mess around in
 
-// NOTE: This is currently an idea in a VERY raw form.
-// The goal is to create something like the 'expect' library (for JS)
-
-// NOTE/QUESTION: What happens if you define a pointer to an empty lambda
-// in a class, then return the pointer (through a method), then define the
-// lambda in that (the caller's) scope, then go back in the class and execute
-// that lambda?
-// Ex. compiler error? awesome functionality? etc.
-
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -112,6 +103,18 @@ class Expect {
     return comparisonBody(comparison, actual, test, customFailureReport);
   }
 
+  Expect& equalTo(inputType test,
+                  std::function<bool(int, int)> comparison =
+                      [](int actual, int test) { return (actual == test); },
+                  string customFailureReport = "") {
+    customFailureReport = (customFailureReport.length() > 0)
+                              ? customFailureReport
+                              : "Expected " + to_string(actual) +
+                                    " to be equal to " + to_string(test);
+
+    return comparisonBody(comparison, actual, test, customFailureReport);
+  }
+
   // TODO: Create a toHaveFailed and/or toBeFalse method
   // This will allow for anticipation of falure of certain tests
   // as a test itself, obviously, care should be used when
@@ -206,7 +209,6 @@ int main() {
   cout << "a: "
        << (string)(a.greaterThan(
                         vals[0],  // a dummy var to comply with type in function
-                                  // signature
                         // lambda for custom comparison
                         [vals](int actual, int testArg) -> bool {
                           // size() is a function from #include <array>
@@ -241,10 +243,15 @@ int main() {
 
   []() {
     Expect d{9, "to be less than a given number"};
-    cout << "d: " << d.lessThan(11).passedStr() << endl;  // test
+    cout << "d: " << d.lessThan(11).passedStr() << endl;
   }();
 
-  alpha();  // the lambda for 'c'
+  alpha();  // the lambda for test 'c'
+
+  const int answerToEverything = 42;
+
+  Expect e{42, "to be the answer to everything"};
+  cout << "e: " << (string)e.equalTo(answerToEverything) << endl;
 
   cout << endl;  // formatting
 

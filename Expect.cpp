@@ -1,5 +1,6 @@
-// Initially from scratch.cpp
-//   A 'scratch' cpp file for me to mess around in
+// C++ Test Suite
+// Programmer: Daniel Roberts
+// Compiler(s) used: g++ -std=c++17 -Wall
 
 #include <iostream>
 using std::cout;

@@ -1,3 +1,6 @@
+// C++ Test Suite
+// Programmer: Daniel Roberts
+// Compiler(s) used: g++ -std=c++17 -Wall
 
 #ifndef GENERAL_LIBRARY_H
 #define GENERAL_LIBRARY_H

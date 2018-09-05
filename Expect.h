@@ -12,7 +12,7 @@ using std::to_string;
 // TODO: Create an internal variable (vector?) to hold a record of the tests
 // and the input to those tests for the final report Ex.
 // instance(17).greaterThan(5).lessThan(33) would generate:
-//   passed: Expected 17 to be greater than 5 but less than 33
+//   passed: Expected 17 to be greater than 5 and less than 33
 // This would, presumably, have implications for the default and
 // custom failureReport, along with testStatus()
 template <typename inputType>
@@ -74,10 +74,6 @@ class Expect {
     return comparisonBody(comparison, actual, testValue, customFailureReport);
   }
 
-  // TODO: Create a toHaveFailed and/or toBeFalse method
-  // This will allow for anticipation of falure of certain tests
-  // as a test itself, obviously, care should be used when
-  // employing such a method
   Expect& toHaveFailed(string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
@@ -89,7 +85,7 @@ class Expect {
     }
 
     failureReport = customFailureReport;
-    return thisFailed();
+    return thisFailed();  // it it 'passed' it failed
   }
 
   // return the variable that gets tested
@@ -137,6 +133,9 @@ class Expect {
       return getThis();  // don't run further tests
     }
 
+    // TODO: add a try/catch block to capture the return of comparison
+    // This way, if the user supplied comparison does something wierd,
+    // the testing can still continue
     if (comparison(actual, testValue)) {
       return getThis();  // continue chain
     } else {             // failed the test

@@ -200,17 +200,19 @@ int main() {
 
   auto b = Expect(a.getActual(), "to be greater than -3");
 
-  int vals[]{1, 2, 3, 4, 5, 6, 9};
+  int vals[]{-1, 0, 1, 2, 3, 4, 5, 6, 9};
 
   cout << "a: "
        << (string)(a.greaterThan(
               vals[0],  // a dummy var to comply with type in function signature
               // lambda for custom comparison
-              [vals](int a, int b) -> bool {
-                const int size = (sizeof(vals) / sizeof(vals[0]));
+              [vals](int actual, int testArg) -> bool {
+                // size() is a function from #include <array>
+                // int size is a local variable
+                const int size = std::size(vals);
 
                 for (size_t i{}; i < size; i++) {
-                  if (a <= vals[i]) {
+                  if (actual <= vals[i]) {
                     return false;
                   }
                 }

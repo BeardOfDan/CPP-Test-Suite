@@ -181,7 +181,8 @@ class Expect {
 
   const inputType actual;  // the actual value, to be used for testing
 
-  const string description;  // describes the test being performed
+  // No longer const, because it's private and may need to be internally altered
+  string description;  // describes the test being performed
 
   bool failed;  // Initially false, but a failed test turns it true
 
@@ -189,12 +190,12 @@ class Expect {
 
   int skippedTests = 0;
   int testsPerformed = 0;  // TODO: Update the code to update this variable
-};
+};                         // End of class Expect
 
 int main() {
   cout << endl;  // formatting
 
-  Expect f{7, "to be greater than all numbers in an array"};
+  Expect f{7, "not to be greater than all numbers in an array"};
 
   auto a = f;
 
@@ -204,25 +205,28 @@ int main() {
 
   cout << "a: "
        << (string)(a.greaterThan(
-              vals[0],  // a dummy var to comply with type in function signature
-              // lambda for custom comparison
-              [vals](int actual, int testArg) -> bool {
-                // size() is a function from #include <array>
-                // int size is a local variable
-                const int size = std::size(vals);
+                        vals[0],  // a dummy var to comply with type in function
+                                  // signature
+                        // lambda for custom comparison
+                        [vals](int actual, int testArg) -> bool {
+                          // size() is a function from #include <array>
+                          // int size is a local variable
+                          const int size = std::size(vals);
 
-                for (size_t i{}; i < size; i++) {
-                  if (actual <= vals[i]) {
-                    return false;
-                  }
-                }
-                return true;
-              },  // end of lambda
-              // Expression resolves to custom failure report argument
-              "expected " + to_string(a.getActual()) +
-                  " to be greater than all of the values in "
-                  "the array " +
-                  arrToString(vals, size(vals))))
+                          for (size_t i{}; i < size; i++) {
+                            if (actual <= vals[i]) {
+                              return false;
+                            }
+                          }
+                          return true;
+                        },  // end of lambda
+                        // Expression resolves to custom failure report argument
+                        "expected " + to_string(a.getActual()) +
+                            " to be greater than all of the values in "
+                            "the array " +
+                            arrToString(vals, size(vals)))
+                       .toHaveFailed("The array included the number 9, but the "
+                                     "expect was given a value of 7"))
        << endl;
 
   cout << "b: "

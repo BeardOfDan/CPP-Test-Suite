@@ -57,7 +57,7 @@ using std::size;
 // instance(17).greaterThan(5).lessThan(33) would generate:
 //   passed: Expected 17 to be greater than 5 but less than 33
 // This would, presumably, have implications for the default and
-// custom failureReport, along with passedStr()
+// custom failureReport, along with testStatus()
 template <typename inputType>
 class Expect {
  public:
@@ -149,7 +149,7 @@ class Expect {
 
   // TODO: Refactor name to report string,
   // it will more accurately describe what it will do
-  string passedStr(bool verbose = true, bool prefaced = true) {
+  string testStatus(bool verbose = true, bool prefaced = true) {
     if (verbose) {
       if (prefaced) {
         return passed()
@@ -169,7 +169,7 @@ class Expect {
   // Type overloads
   operator int() { return (passed() ? 1 : 0); }
   operator bool() { return passed(); }
-  operator string() { return passedStr(); }
+  operator string() { return testStatus(); }
 
  private:
   // This is private because it is an internal method
@@ -205,13 +205,14 @@ class Expect {
 int main() {
   cout << endl;  // formatting
 
-  Expect f{7, "not to be greater than all numbers in an array"};
+  int vals[]{-1, 0, 1, 2, 3, 4, 5, 6, 9};
+
+  Expect f{7, "not to be greater than every number in the array " +
+                  arrToString(vals, size(vals))};
 
   auto a = f;
 
   auto b = Expect(a.getActual(), "to be greater than -3");
-
-  int vals[]{-1, 0, 1, 2, 3, 4, 5, 6, 9};
 
   cout << "a: "
        << (string)(a.greaterThan(
@@ -240,17 +241,17 @@ int main() {
 
   cout << "b: "
        << (b.greaterThan(-3, [](int a, int b) -> bool { return (a > b); })
-               .passedStr())
+               .testStatus())
        << endl;
 
   auto alpha = []() {
     Expect c{9, "Expect to 'fail' due to constructor argument", true};
-    cout << "c: " << c.toHaveFailed().passedStr(true, false) << endl;
+    cout << "c: " << c.toHaveFailed().testStatus(true, false) << endl;
   };
 
   []() {
     Expect d{9, "to be less than a given number"};
-    cout << "d: " << d.lessThan(11).passedStr() << endl;
+    cout << "d: " << d.lessThan(11).testStatus() << endl;
   }();
 
   alpha();  // the lambda for test 'c'
@@ -261,7 +262,7 @@ int main() {
   cout << "e: " << (string)e.equalTo(answerToEverything) << endl;
 
   Expect g{3.14, "Expect to be able to also use type double"};
-  cout << "g: " << (string)g.equalTo(g.getActual()).passedStr(true, false)
+  cout << "g: " << (string)g.equalTo(g.getActual()).testStatus(true, false)
        << endl;
 
   cout << endl;  // formatting

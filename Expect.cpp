@@ -71,11 +71,6 @@ class Expect {
 
   ~Expect() {}
 
-  Expect& getFailed() {
-    failed = true;
-    return getThis();
-  }
-
   // Returns this class (to enable method chaining)
   Expect& getThis() { return *this; }
 
@@ -137,7 +132,7 @@ class Expect {
     }
 
     failureReport = customFailureReport;
-    return getFailed();
+    return thisFailed();
   }
 
   // return the variable that gets tested
@@ -172,7 +167,12 @@ class Expect {
   operator string() { return testStatus(); }
 
  private:
-  // This is private because it is an internal method
+  // These methods are private because they are internal methods
+  Expect& thisFailed() {
+    failed = true;
+    return getThis();
+  }
+
   Expect& comparisonBody(std::function<bool(int, int)> comparison,
                          inputType actual, inputType testValue,
                          string customFailureReport) {
@@ -185,7 +185,7 @@ class Expect {
       return getThis();  // continue chain
     } else {             // failed the test
       failureReport = customFailureReport;
-      return getFailed();
+      return thisFailed();
     }
   }
 

@@ -79,40 +79,47 @@ class Expect {
   // Returns this class (to enable method chaining)
   Expect& getThis() { return *this; }
 
-  Expect& greaterThan(inputType test,
+  Expect& greaterThan(inputType testValue,
                       std::function<bool(int, int)> comparison =
-                          [](int actual, int test) { return (actual > test); },
+                          [](int actual, int testValue) {
+                            return (actual > testValue);
+                          },
                       string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
                               : "Expected " + to_string(actual) +
-                                    " to be greater than " + to_string(test);
+                                    " to be greater than " +
+                                    to_string(testValue);
 
-    return comparisonBody(comparison, actual, test, customFailureReport);
+    return comparisonBody(comparison, actual, testValue, customFailureReport);
   }
 
-  Expect& lessThan(inputType test,
+  Expect& lessThan(inputType testValue,
                    std::function<bool(int, int)> comparison =
-                       [](int actual, int test) { return (actual < test); },
+                       [](int actual, int testValue) {
+                         return (actual < testValue);
+                       },
                    string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
                               : "Expected " + to_string(actual) +
-                                    " to be less than " + to_string(test);
+                                    " to be less than " + to_string(testValue);
 
-    return comparisonBody(comparison, actual, test, customFailureReport);
+    return comparisonBody(comparison, actual, testValue, customFailureReport);
   }
 
-  Expect& equalTo(inputType test,
+  Expect& equalTo(inputType testValue,
                   std::function<bool(int, int)> comparison =
-                      [](int actual, int test) { return (actual == test); },
+                      [](int actual, int testValue) {
+                        return (actual == testValue);
+                      },
                   string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
                               : "Expected " + to_string(actual) +
-                                    " to be equal to " + to_string(test);
+                                    " to be equal to " + to_string(testValue);
 
-    return comparisonBody(comparison, actual, test, customFailureReport);
+    return comparisonBody(comparison, actual, testValue, customFailureReport);
   }
 
   // TODO: Create a toHaveFailed and/or toBeFalse method
@@ -167,14 +174,14 @@ class Expect {
  private:
   // This is private because it is an internal method
   Expect& comparisonBody(std::function<bool(int, int)> comparison,
-                         inputType actual, inputType test,
+                         inputType actual, inputType testValue,
                          string customFailureReport) {
     if (failed) {
       skippedTests++;
       return getThis();  // don't run further tests
     }
 
-    if (comparison(actual, test)) {
+    if (comparison(actual, testValue)) {
       return getThis();  // continue chain
     } else {             // failed the test
       failureReport = customFailureReport;

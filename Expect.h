@@ -3,6 +3,9 @@
 using std::string;
 using std::to_string;
 
+#include "generalLibrary.h"
+// toString
+
 // TODO: Create an internal variable (vector?) to hold a record of the tests
 // and the input to those tests for the final report Ex.
 // instance(17).greaterThan(5).lessThan(33) would generate:
@@ -48,8 +51,8 @@ class Expect {
                    string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
-                              : "Expected " + to_string(actual) +
-                                    " to be less than " + to_string(testValue);
+                              : "Expected " + toString(actual) +
+                                    " to be less than " + toString(testValue);
 
     return comparisonBody(comparison, actual, testValue, customFailureReport);
   }
@@ -62,8 +65,8 @@ class Expect {
                   string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
-                              : "Expected " + to_string(actual) +
-                                    " to be equal to " + to_string(testValue);
+                              : "Expected " + toString(actual) +
+                                    " to be equal to " + toString(testValue);
 
     return comparisonBody(comparison, actual, testValue, customFailureReport);
   }
@@ -98,16 +101,15 @@ class Expect {
   string testStatus(bool verbose = true, bool prefaced = true) {
     if (verbose) {
       if (prefaced) {
-        return passed()
-                   ? ("passed: \"Expect " + to_string(actual) + " " +
-                      description + "\"")
-                   : ("failed: \"Expect " + to_string(actual) + " " +
-                      description + "\"\n  " + failureReport + "\n  skipped " +
-                      to_string(skippedTests) + " tests.");
+        return passed() ? ("passed: \"Expect " + toString(actual) + " " +
+                           description + "\"")
+                        : ("failed: \"Expect " + toString(actual) + " " +
+                           description + "\"\n  " + failureReport +
+                           "\n  skipped " + toString(skippedTests) + " tests.");
       }
       return passed() ? ("passed: \"" + description + "\"")
                       : ("failed: \"" + description + "\"\n  " + failureReport +
-                         "\n  skipped " + to_string(skippedTests) + " tests.");
+                         "\n  skipped " + toString(skippedTests) + " tests.");
     }
     return passed() ? "passed" : "failed";
   }

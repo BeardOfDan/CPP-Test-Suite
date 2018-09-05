@@ -65,8 +65,9 @@ int main() {
   };
 
   []() {
-    Expect d{9, "to be less than a given number"};
-    cout << "d: " << d.lessThan(11).testStatus() << endl;
+    const int testInput = 11;
+    Expect d{9, "to be less than a given number: " + to_string(testInput)};
+    cout << "d: " << d.lessThan(testInput).testStatus() << endl;
   }();
 
   alpha();  // the lambda for test 'c'
@@ -78,6 +79,11 @@ int main() {
 
   Expect g{3.14, "Expect to be able to also use type double"};
   cout << "g: " << (string)g.equalTo(g.getActual()).testStatus(true, false)
+       << endl;
+
+  Expect h{"Actual value text", "Expect to be able to also use type string"};
+  cout << "h: "
+       << (string)h.equalTo("Actual value text").testStatus(true, false)
        << endl;
 
   cout << endl;  // formatting

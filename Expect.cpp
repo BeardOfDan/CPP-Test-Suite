@@ -24,6 +24,11 @@ using std::vector;
 using std::string;
 using std::to_string;
 
+#include <array>
+using std::size;
+
+#include "generalLibrary.h"
+
 // arg part of function signature for lambda arg
 // std::function<returnType (arg1Type, arg2Type, ...)> lambdaName
 
@@ -195,7 +200,7 @@ int main() {
 
   auto b = Expect(a.getActual(), "to be greater than -3");
 
-  int vals[]{1, 2, 3, 4, 5, 6};
+  int vals[]{1, 2, 3, 4, 5, 6, 9};
 
   cout << "a: "
        << (string)(a.greaterThan(
@@ -215,15 +220,7 @@ int main() {
               "expected " + to_string(a.getActual()) +
                   " to be greater than all of the values in "
                   "the array " +
-                  [vals]() -> string {
-                string s = "[ ";
-                const int size = (sizeof(vals) / sizeof(vals[0]));
-                for (size_t i{}; i < size; i++) {
-                  s += to_string(vals[i]) + ((i + 1 < size) ? ", " : " ");
-                }
-                return (s + "]");
-              }()  // end of custom failure report argument expression
-              ))
+                  arrToString(vals, size(vals))))
        << endl;
 
   cout << "b: "

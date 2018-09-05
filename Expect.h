@@ -41,8 +41,8 @@ class Expect {
   }
 
   Expect& lessThan(inputType testValue,
-                   std::function<bool(int, int)> comparison =
-                       [](int actual, int testValue) {
+                   std::function<bool(inputType, inputType)> comparison =
+                       [](inputType actual, inputType testValue) {
                          return (actual < testValue);
                        },
                    string customFailureReport = "") {
@@ -55,8 +55,8 @@ class Expect {
   }
 
   Expect& equalTo(inputType testValue,
-                  std::function<bool(int, int)> comparison =
-                      [](int actual, int testValue) {
+                  std::function<bool(inputType, inputType)> comparison =
+                      [](inputType actual, inputType testValue) {
                         return (actual == testValue);
                       },
                   string customFailureReport = "") {
@@ -124,7 +124,7 @@ class Expect {
     return getThis();
   }
 
-  Expect& comparisonBody(std::function<bool(int, int)> comparison,
+  Expect& comparisonBody(std::function<bool(inputType, inputType)> comparison,
                          inputType actual, inputType testValue,
                          string customFailureReport) {
     if (failed) {

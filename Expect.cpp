@@ -253,6 +253,10 @@ int main() {
   Expect e{42, "to be the answer to everything"};
   cout << "e: " << (string)e.equalTo(answerToEverything) << endl;
 
+  Expect g{3.14, "Expect to be able to also use type double"};
+  cout << "g: " << (string)g.equalTo(g.getActual()).passedStr(true, false)
+       << endl;
+
   cout << endl;  // formatting
 
   return 0;

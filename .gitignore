@@ -12,3 +12,4 @@ misc.cpp
 misc
 
 writeArrayNthBackward.h
+writeArrayNthBackward.test.cpp

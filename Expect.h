@@ -103,14 +103,14 @@ class Expect {
   string testStatus(bool verbose = true, bool prefaced = true) {
     if (verbose) {
       if (prefaced) {
-        return passed() ? ("passed: \"Expect " + toString(actual) + " " +
-                           description + "\"")
-                        : ("failed: \"Expect " + toString(actual) + " " +
-                           description + "\"\n  " + failureReport +
-                           "\n  skipped " + toString(skippedTests) + " tests.");
+        return passed()
+                   ? ("passed: Expect " + toString(actual) + " " + description)
+                   : ("failed: Expect " + toString(actual) + " " + description +
+                      "\n  " + failureReport + "\n  skipped " +
+                      toString(skippedTests) + " tests.");
       }
-      return passed() ? ("passed: \"" + description + "\"")
-                      : ("failed: \"" + description + "\"\n  " + failureReport +
+      return passed() ? ("passed: " + description)
+                      : ("failed: " + description + "\n  " + failureReport +
                          "\n  skipped " + toString(skippedTests) + " tests.");
     }
     return passed() ? "passed" : "failed";

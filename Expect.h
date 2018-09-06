@@ -43,7 +43,7 @@ class Expect {
                                     " to be greater than " +
                                     to_string(testValue);
 
-    return comparisonBody(comparison, actual, testValue, customFailureReport);
+    return comparisonBody(actual, comparison, testValue, customFailureReport);
   }
 
   Expect& lessThan(inputType testValue,
@@ -57,7 +57,7 @@ class Expect {
                               : "Expected " + toString(actual) +
                                     " to be less than " + toString(testValue);
 
-    return comparisonBody(comparison, actual, testValue, customFailureReport);
+    return comparisonBody(actual, comparison, testValue, customFailureReport);
   }
 
   Expect& equalTo(inputType testValue,
@@ -71,7 +71,7 @@ class Expect {
                               : "Expected " + toString(actual) +
                                     " to be equal to " + toString(testValue);
 
-    return comparisonBody(comparison, actual, testValue, customFailureReport);
+    return comparisonBody(actual, comparison, testValue, customFailureReport);
   }
 
   Expect& toHaveFailed(string customFailureReport = "") {
@@ -97,6 +97,9 @@ class Expect {
 
   // TODO: Refactor name to report string,
   // it will more accurately describe what it will do
+  // TODO: Refactor below to reduce repeated code
+  // TODO: Have report be function of inputType
+  //   ex. if string, then put actual in quotes -> "\"" + actual + "\""
   string testStatus(bool verbose = true, bool prefaced = true) {
     if (verbose) {
       if (prefaced) {
@@ -125,9 +128,9 @@ class Expect {
     return getThis();
   }
 
-  Expect& comparisonBody(std::function<bool(inputType, inputType)> comparison,
-                         inputType actual, inputType testValue,
-                         string customFailureReport) {
+  Expect& comparisonBody(inputType actual,
+                         std::function<bool(inputType, inputType)> comparison,
+                         inputType testValue, string customFailureReport) {
     if (failed) {
       skippedTests++;
       return getThis();  // don't run further tests

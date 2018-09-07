@@ -9,6 +9,23 @@ using std::to_string;
 #include "generalLibrary.h"
 // toString
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
+// Color Codes, for the console
+// TEXT COLOR
+#define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
+#define YELLOW "\x1B[33m"
+#define BLUE "\x1B[34m"
+#define MAGENTA "\x1B[35m"
+#define CYAN "\x1B[36m"
+#define WHITE "\x1B[37m"
+#define RESET "\x1B[0m"
+// BACKGROUND COLOR
+// TODO: Add background color codes
+
 // TODO: Create an internal variable (vector?) to hold a record of the tests
 // and the input to those tests for the final report Ex.
 // instance(17).greaterThan(5).lessThan(33) would generate:
@@ -114,6 +131,30 @@ class Expect {
                          "\n  skipped " + toString(skippedTests) + " tests.");
     }
     return passed() ? "passed" : "failed";
+  }
+
+  void writeTestStatus(bool verbose = true, bool prefaced = true) {
+    if (prefaced) {
+      if (passed()) {
+        cout << GREEN << "passed" << RESET
+             << (": Expect " + toString(actual) + " " + description) << endl;
+      } else {  // Failed
+        cout << RED << "failed" << RESET
+             << (": Expect " + toString(actual) + " " + description + "\n  " +
+                 failureReport + "\n  skipped " + toString(skippedTests) +
+                 " tests.")
+             << endl;
+      }
+    } else {  // not prefaced
+      if (passed()) {
+        cout << GREEN << "passed" << RESET << ": " << description << endl;
+      } else {  // failed
+        cout << RED << "failed" << RESET
+             << (": " + description + "\n  " + failureReport + "\n  skipped " +
+                 toString(skippedTests) + " tests.")
+             << endl;
+      }
+    }
   }
 
   // Type overloads

@@ -1,4 +1,4 @@
-#include "coutRedirect.h"
+#include "redirectOutput.h"
 // redirectOutput struct
 
 #include <iostream>

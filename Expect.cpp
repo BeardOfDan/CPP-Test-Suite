@@ -83,8 +83,7 @@ int main() {
        << endl;
 
   Expect h{"Actual value text", "Expect to be able to also use type string"};
-  cout << "h: "
-       << (string)h.equalTo("Actual value text").testStatus(true, false)
+  cout << "h: " << (string)h.equalTo(h.getActual()).testStatus(true, false)
        << endl;
 
   cout << endl;  // formatting

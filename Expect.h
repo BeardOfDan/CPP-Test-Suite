@@ -22,8 +22,8 @@ using std::endl;
 #define MAGENTA "\x1B[35m"
 #define CYAN "\x1B[36m"
 #define WHITE "\x1B[37m"
-// TEXT STYLE
-#define BOLD "\x1B[1m"
+// TEXT ATTRIBUTES
+#define BRIGHT "\x1B[1m"
 #define RESET "\x1B[0m"
 // BACKGROUND COLOR
 // TODO: Add background color codes
@@ -138,10 +138,10 @@ class Expect {
   void writeTestStatus(bool verbose = true, bool prefaced = true) {
     if (prefaced) {
       if (passed()) {
-        cout << GREEN << BOLD << "passed" << RESET
+        cout << GREEN << BRIGHT << "passed" << RESET
              << (": Expect " + toString(actual) + " " + description) << endl;
       } else {  // Failed
-        cout << RED << BOLD << "failed" << RESET
+        cout << RED << BRIGHT << "failed" << RESET
              << (": Expect " + toString(actual) + " " + description + "\n  " +
                  failureReport + "\n  skipped " + toString(skippedTests) +
                  " tests.")
@@ -149,10 +149,10 @@ class Expect {
       }
     } else {  // not prefaced
       if (passed()) {
-        cout << GREEN << BOLD << "passed" << RESET << ": " << description
+        cout << GREEN << BRIGHT << "passed" << RESET << ": " << description
              << endl;
       } else {  // failed
-        cout << RED << BOLD << "failed" << RESET
+        cout << RED << BRIGHT << "failed" << RESET
              << (": " + description + "\n  " + failureReport + "\n  skipped " +
                  toString(skippedTests) + " tests.")
              << endl;

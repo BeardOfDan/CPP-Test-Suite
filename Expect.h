@@ -114,11 +114,7 @@ class Expect {
 
   bool passed() { return !failed; }
 
-  // TODO: Refactor name to report string,
-  // it will more accurately describe what it will do
   // TODO: Refactor below to reduce repeated code
-  // TODO: Have report be function of inputType
-  //   ex. if string, then put actual in quotes -> "\"" + actual + "\""
   string testStatus(bool verbose = true, bool prefaced = true) {
     if (verbose) {
       if (prefaced) {

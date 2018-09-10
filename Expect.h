@@ -4,7 +4,6 @@
 
 #include <string>
 using std::string;
-using std::to_string;
 
 #include "generalLibrary.h"
 // toString

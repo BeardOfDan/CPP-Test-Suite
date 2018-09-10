@@ -109,6 +109,7 @@ class Expect {
   // return the variable that gets tested
   // it is the actual value, because it might not be the expected one
   //   ex. It could be the output of a function with certain args
+  //   => Expect expt {foo(), descriptionString};
   inputType getActual() { return actual; }
 
   bool passed() { return !failed; }
@@ -175,6 +176,8 @@ class Expect {
       return getThis();  // don't run further tests
     }
 
+    // The comparison lambda can be user defined, so there could be an
+    // exception thrown, so must put inside try/catch block
     try {
       if (comparison(actual, testValue)) {
         return getThis();

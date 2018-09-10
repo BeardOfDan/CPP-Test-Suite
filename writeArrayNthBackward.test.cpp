@@ -5,14 +5,12 @@
 #include "Expect.h"
 // Testing framework
 
-#include "redirectOutput.h"
-// Struct, of the same name, captures output from 'cout' as a string
-
 #include "writeArrayNthBackward.h"
 // Function, of the same name, to test
 
 #include "generalLibrary.h"
 // toString, a templated function
+// redirectOutput, a struct to capture output from 'cout' as a string
 
 #include <string>
 using std::string;

@@ -1,4 +1,4 @@
-#include "redirectOutput.h"
+#include "generalLibrary.h"
 // redirectOutput struct
 
 #include <iostream>

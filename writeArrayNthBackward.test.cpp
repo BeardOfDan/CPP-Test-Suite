@@ -51,7 +51,7 @@ int main() {
   // what the function should print to the screen
   vector<string> expectations;
 
-  // Supply arguments and the expected input
+  // Supply arguments and the expected output
   args.push_back(make_tuple((char*)"abc123", 2));
   expectations.push_back("2ca");
 
@@ -99,8 +99,9 @@ string getArrayOutput(char* input, int n) {
 }
 
 // Dynamically creates a test description
-string getTestDescription(char* input, int n, string result) {
-  return ("Expect " + getFuncCall(input, n) + " to write \"" + result + "\"");
+string getTestDescription(char* input, int n, string expectation) {
+  return ("Expect " + getFuncCall(input, n) + " to write \"" + expectation +
+          "\"");
 }
 
 // Returns a string of what the function call looked like

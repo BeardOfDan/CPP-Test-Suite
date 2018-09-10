@@ -37,7 +37,7 @@ int main() {
   cout << "Lab 1, writeArrayNthBackwards" << endl;
   cout << "Programmer: Daniel Roberts" << endl;
   cout << "Editor(s) used: VS Code" << endl;
-  cout << "Compiler(s) used: g++ -std=c++17 -Wall" << endl;
+  cout << "Compiler(s) used: g++ -std=c++17" << endl;
   cout << "File: " << __FILE__ << endl;
   cout << "Compiled: " << __DATE__ << " at " << __TIME__ << endl;
   cout << "Standard: C++" << (to_string(__cplusplus)).substr(2, 2) << endl

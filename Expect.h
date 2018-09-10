@@ -184,30 +184,20 @@ class Expect {
         return thisFailed();
       }
     } catch (inputType err) {
-      failureReport = customFailureReport + "  \n" + toString(err);
+      failureReport = customFailureReport + "  \n    " + toString(err);
       return thisFailed();
     } catch (string err) {
-      failureReport = customFailureReport + "  \n" + toString(err);
+      failureReport = customFailureReport + "  \n    " + toString(err);
       return thisFailed();
     } catch (int err) {
-      failureReport = customFailureReport + "  \n" + toString(err);
+      failureReport = customFailureReport + "  \n    " + toString(err);
       return thisFailed();
     } catch (std::exception& err) {
       std::cerr << "exception caught: " << err.what() << endl;
-      failureReport = customFailureReport + "  \n" + err.what();
+      failureReport = customFailureReport + "  \n    " + err.what();
       return thisFailed();
     }
-
-    // // TODO: add a try/catch block to capture the return of comparison
-    // // This way, if the user supplied comparison does something wierd,
-    // // the testing can still continue
-    // if (comparison(actual, testValue)) {
-    //   return getThis();  // continue chain
-    // } else {             // failed the test
-    //   failureReport = customFailureReport;
-    //   return thisFailed();
-    // }
-  }
+  }  // end of Expect& comparisonBody
 
   const inputType actual;  // the actual value, to be used for testing
 
@@ -219,34 +209,5 @@ class Expect {
   string failureReport;
 
   int skippedTests = 0;
-  int testsPerformed = 0;  // TODO: Update the code to update this variable
-};                         // End of class Expect
-
-// TEST instanceRunning wrapper
-// accept a vector (of tuples?) of everything
-// vector failureDataStruct
-// for(int i{}; i < vector<everything>.size(); i++) {
-//   bool passed = false;
-//   ... exec test and put pass/fail value into passed
-//         use this file's class (currently named Expect
-// ) to exec tests
-//         ex. Expect
-//  test{args here};
-//             const passed = test.meth1().meth2.meth3()... .passed();
-//   if (passed) {
-//     // do little here... move onto next test...
-//   } else {
-//     auto fds = new failureDataStruct(iteration=i,
-//     arguments=vector<everything>[i].args, expectedOutput, actualOutput);
-//     // should probably have Expect
-// class use a method to return fds as a value
-//     // then can just push that method's return onto vector of fds's
-//     failureDataStruct.push_back(fds);
-//   }
-// }
-// cout << vector<everything>.size() - vector<failureDataStruct>.size() << "
-// of " << vector<everything>.size() tests passed! << endl; for(let i = 0; i
-// < vector<failureDataStruct>.size(); i++) {
-//   failureDataStruct[i].generateReport(); // cout's a report of the
-//   failure
-// }
+  // int testsPerformed = 0;  // TODO: Update the code to update this variable
+};  // End of class Expect

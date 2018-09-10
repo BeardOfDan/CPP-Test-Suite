@@ -41,7 +41,7 @@ int main() {
   cout << "File: " << __FILE__ << endl;
   cout << "Compiled: " << __DATE__ << " at " << __TIME__ << endl;
   cout << "Standard: C++" << (to_string(__cplusplus)).substr(2, 2) << endl
-       << endl;  // Note: Should be 17, if not, then there will be errors!
+       << endl;  // Note: Should be C++17, if not, then there will be errors!
 
   // arguments for calling writeArrayNthBackward
   // Note: I am assuming all calls to the function to test will be with the
@@ -91,7 +91,7 @@ int main() {
   return 0;
 }
 
-// Redirects the output from writeArrayNthBackward and returns it as a string
+// Captures the output from writeArrayNthBackward and returns it as a string
 string getArrayOutput(char* input, int n) {
   redirectOutput output;
   writeArrayNthBackward(input, 0, strlen(input), n);

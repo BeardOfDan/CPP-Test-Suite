@@ -51,16 +51,16 @@ class Expect {
   Expect& getThis() { return *this; }
 
   Expect& greaterThan(inputType testValue,
-                      std::function<bool(int, int)> comparison =
-                          [](int actual, int testValue) {
+                      std::function<bool(inputType, inputType)> comparison =
+                          [](inputType actual, inputType testValue) {
                             return (actual > testValue);
                           },
                       string customFailureReport = "") {
     customFailureReport = (customFailureReport.length() > 0)
                               ? customFailureReport
-                              : "Expected " + to_string(actual) +
+                              : "Expected " + toString(actual) +
                                     " to be greater than " +
-                                    to_string(testValue);
+                                    toString(testValue);
 
     return comparisonBody(actual, comparison, testValue, customFailureReport);
   }
@@ -176,15 +176,37 @@ class Expect {
       return getThis();  // don't run further tests
     }
 
-    // TODO: add a try/catch block to capture the return of comparison
-    // This way, if the user supplied comparison does something wierd,
-    // the testing can still continue
-    if (comparison(actual, testValue)) {
-      return getThis();  // continue chain
-    } else {             // failed the test
-      failureReport = customFailureReport;
+    try {
+      if (comparison(actual, testValue)) {
+        return getThis();
+      } else {
+        failureReport = customFailureReport;
+        return thisFailed();
+      }
+    } catch (inputType err) {
+      failureReport = customFailureReport + "  \n" + toString(err);
+      return thisFailed();
+    } catch (string err) {
+      failureReport = customFailureReport + "  \n" + toString(err);
+      return thisFailed();
+    } catch (int err) {
+      failureReport = customFailureReport + "  \n" + toString(err);
+      return thisFailed();
+    } catch (std::exception& err) {
+      std::cerr << "exception caught: " << err.what() << endl;
+      failureReport = customFailureReport + "  \n" + err.what();
       return thisFailed();
     }
+
+    // // TODO: add a try/catch block to capture the return of comparison
+    // // This way, if the user supplied comparison does something wierd,
+    // // the testing can still continue
+    // if (comparison(actual, testValue)) {
+    //   return getThis();  // continue chain
+    // } else {             // failed the test
+    //   failureReport = customFailureReport;
+    //   return thisFailed();
+    // }
   }
 
   const inputType actual;  // the actual value, to be used for testing

@@ -87,6 +87,17 @@ int main() {
   //      << endl;
   h.equalTo(h.getActual()).writeTestStatus(true, false);
 
+  Expect i{"Random, irrelevant value",
+           "Expect test to continue, even after an exception is thrown"};
+  i.greaterThan("asdf", [](const char* i, const char* j) -> bool { throw 15; })
+      .lessThan(
+          "jkl",
+          [](const char* i, const char* j) -> bool { throw "random error"; })
+      .greaterThan(";1",
+                   [](const char* i, const char* j) -> bool { return false; })
+      .toHaveFailed()
+      .writeTestStatus(true, false);
+
   cout << endl;  // formatting
 
   return 0;

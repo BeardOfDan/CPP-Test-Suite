@@ -203,7 +203,6 @@ class Expect {
 
   const inputType actual;  // the actual value, to be used for testing
 
-  // No longer const, because it's private and may need to be internally altered
   string description;  // describes the test being performed
 
   bool failed;  // Initially false, but a failed test turns it true
